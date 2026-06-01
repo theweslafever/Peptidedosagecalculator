@@ -40,12 +40,17 @@ export default function App() {
   const [customDose, setCustomDose] = useState('');
   const [customUnit, setCustomUnit] = useState('mcg');
 
-  const calculateInjectionVolume = (vialMG: number, bacML: number, doseMCG: number, unit: string) => {
-    const vialMCG = unit === 'mg' ? vialMG : vialMG * 1000;
-    const dosageInMCG = unit === 'mg' ? doseMCG * 1000 : doseMCG;
-    const concentration = vialMCG / bacML; // mcg per mL
+  const calculateInjectionVolume = (vialMG: number, bacML: number, doseAmount: number, unit: string) => {
+    // Vial is ALWAYS in mg, so always convert to mcg
+    const vialMCG = vialMG * 1000;
+    // Dose conversion depends on selected unit
+    const dosageInMCG = unit === 'mg' ? doseAmount * 1000 : doseAmount;
+    // Calculate concentration in mcg per mL
+    const concentration = vialMCG / bacML;
+    // Calculate volume needed
     const volumeML = dosageInMCG / concentration;
-    const volumeUnits = volumeML * 100; // Convert to units on U100 syringe
+    // Convert to U100 syringe units (1ml = 100 units)
+    const volumeUnits = volumeML * 100;
     return { volumeML: volumeML.toFixed(3), volumeUnits: volumeUnits.toFixed(2) };
   };
 
